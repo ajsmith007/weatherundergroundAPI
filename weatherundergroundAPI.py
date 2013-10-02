@@ -18,20 +18,21 @@ import json
 # print "Current temperature in %s is: %s" % (location, temp_f) 
 # f.close()
 
-## Open file for writing
-foutput = open('precipWashingtonDC.csv','w')
 
 ## Historical Data
 prefix_key = 'http://api.wunderground.com/api/34e4d065c41d49d4/history_'
-start_date = 20120301
-numdays = 11
+startdate = 20120501
+numdays = 31
 query = '/q/'
 state = 'DC'
 city = 'Washington'
 json_end = '.json'
 
+## Open file for writing
+foutput = open('weatherWashingtonDC' + str(startdate) + '.csv','w')
+
 for d in range(0, numdays):
-    date = str(start_date + d)
+    date = str(startdate + d)
     
     historical = prefix_key + date  + query + state + '/' + city + json_end
     
@@ -62,6 +63,12 @@ for d in range(0, numdays):
         minutes = obs[o]['date']['min']
         seconds = str('00')
         tzname = obs[o]['date']['tzname']
+        conditions = obs[o]['conds']
+        if (float(obs[o]['precipm']) <= 0): 
+            precip = str(0)
+        else: 
+            precip = obs[o]['precipm']
+        tempi = obs[o]['tempi']
         
         # Correct tz offset for daylight savings start at 2012-03-11T02:00:00 and end at 2012-11-04T02:00:00
         yyyymmddhhmm = year+month+day+hour+minutes
@@ -76,17 +83,13 @@ for d in range(0, numdays):
         # Print weather data to screen   
         print obs[o]['date']['pretty']
         print 'iso_datetime: ' + iso_datetime
-        print 'Conditions: ' + obs[o]['conds']
-        print 'Temperature(F): ' + obs[o]['tempi']
-        if (float(obs[o]['precipm']) <= 0): 
-            precip = str(0)
-        else: 
-            precip = obs[o]['precipm']
+        print 'Conditions: ' + conditions
+        print 'Temperature(F): ' + tempi
         print 'Precipitation(in/hr): ' + precip
         print # empty line
         
         # Print weather data to file
-        foutput.write(iso_datetime + ',' + precip + '\n')
+        foutput.write(iso_datetime + ',' + tempi + ',' + precip + ',' + conditions + '\n')
     
     # end for o      
     finput.close() # close the daily input file
