@@ -38,7 +38,7 @@ import time
 # End Date:      "2013-01-05 MST"
 
 ## GET Historical Data
-prefix_key = 'http://api.wunderground.com/api/f52834ebdd856d1b/history_'
+prefix_key = 'http://api.wunderground.com/api/<InsertYourAPIKeyHere>/history_'
 startdate = 20050701 
 numdays = 31
 max_calls = 10 # weatherunderground API limit per minute
